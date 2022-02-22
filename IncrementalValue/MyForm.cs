@@ -21,6 +21,7 @@ namespace IncrementalValue
         public string startValue;
         public string incrementalValue;
         public IFeatureClass featureClass;
+        public IFeatureLayer featureLayer;
 
         public MyForm()
         {
@@ -60,7 +61,7 @@ namespace IncrementalValue
             if (currentEditTemplate != null)
             {
                 ILayer2 layer = (ILayer2)currentEditTemplate.Layer;
-                IFeatureLayer featureLayer = (IFeatureLayer)layer;
+                featureLayer = (IFeatureLayer)layer;
                 featureClass = featureLayer.FeatureClass;
                 IFields fields = featureClass.Fields;
                 return fields;

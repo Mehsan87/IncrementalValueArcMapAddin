@@ -8,6 +8,7 @@ using ESRI.ArcGIS.Desktop.AddIns;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Carto;
 
 namespace IncrementalValue
 {
@@ -55,6 +56,8 @@ namespace IncrementalValue
             int newStartVal = int.Parse(myForm.startValue);
             int newIncremantalVal = int.Parse(myForm.incrementalValue);
             CreateFeature(myForm.featureClass, pPoint, myForm.layerFieldName, newStartVal);
+            IGeoFeatureLayer geoFeatureLayer = (IGeoFeatureLayer)myForm.featureLayer;
+            geoFeatureLayer.DisplayAnnotation = true;
             myForm.startValue = (newStartVal + newIncremantalVal).ToString();
             pMxDoc.ActiveView.Refresh();
         }
