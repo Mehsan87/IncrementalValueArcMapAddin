@@ -5,6 +5,9 @@ using System.IO;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Desktop.AddIns;
+using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Geodatabase;
 
 namespace IncrementalValue
 {
@@ -40,10 +43,36 @@ namespace IncrementalValue
 
         protected override void OnMouseDown(MouseEventArgs arg)
         {
-            System.Windows.Forms.MessageBox.Show(myForm.layerFieldName + "_" + myForm.startValue + "_" + myForm.incrementalValue);
+            IMxDocument pMxDoc = ArcMap.Document;
+            IPoint pPoint = pMxDoc.ActiveView.ScreenDisplay.DisplayTransformation.ToMapPoint(arg.X, arg.Y);
+            pPoint.SpatialReference = pMxDoc.FocusMap.SpatialReference;
+            //if (pMxDoc.FocusMap.SpatialReference is IProjectedCoordinateSystem)
+            //{
+            //    IProjectedCoordinateSystem pProjSR = (IProjectedCoordinateSystem)pMxDoc.FocusMap.SpatialReference;
+            //    IGeographicCoordinateSystem pGeoSR = pProjSR.GeographicCoordinateSystem;
+            //    pPoint.Project((ISpatialReference)pGeoSR);
+            //}
+            int newStartVal = int.Parse(myForm.startValue);
+            int newIncremantalVal = int.Parse(myForm.incrementalValue);
+            CreateFeature(myForm.featureClass, pPoint, myForm.layerFieldName, newStartVal);
+            myForm.startValue = (newStartVal + newIncremantalVal).ToString();
+            pMxDoc.ActiveView.Refresh();
         }
 
 
+        public static void CreateFeature(IFeatureClass featureClass, IPoint point, string fieldName, int putVal)
+        {
+            // Build the feature.
+            IFeature feature = featureClass.CreateFeature();
+            feature.Shape = point;
+
+            // Update the value on a string field that indicates who installed the feature.
+            int insertFieldIndex = featureClass.FindField(fieldName);
+            feature.set_Value(insertFieldIndex, putVal);
+            
+            // Commit the new feature to the geodatabase.
+            feature.Store();
+        }
 
         #region"Get Editor from ArcMap"
         // ArcGIS Snippet Title:
