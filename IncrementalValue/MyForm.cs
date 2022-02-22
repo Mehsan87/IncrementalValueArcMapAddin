@@ -1,41 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+﻿using ESRI.ArcGIS.ArcMapUI;
+using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Editor;
-using ESRI.ArcGIS.ArcMapUI;
+using ESRI.ArcGIS.Geodatabase;
+using IncrementalValue;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace IncrementalValue
 {
-    public class PlusVal : ESRI.ArcGIS.Desktop.AddIns.Tool
+    public partial class MyForm : Form
     {
-        public PlusVal()
+        public MyForm()
         {
-            Enabled = false;
+            InitializeComponent();
         }
 
-        protected override void OnUpdate()
+        private void MyForm_Load(object sender, EventArgs e)
         {
             IEditor3 editor3 = GetEditorFromArcMap((IMxApplication)ArcMap.Application);
-
-            if (editor3.EditState == esriEditState.esriStateEditing)
+            IFields fields = GetFieldsFromCreateFeatureTemplate(editor3);
+            comboBox1Layer.Items.Clear();
+            if (fields != null)
             {
-                Enabled = true;
+                for (int i = 0; i < fields.FieldCount; i++)
+                {
+
+                    IField field = fields.get_Field(i);
+                    if (field.Editable && !(field.Type == esriFieldType.esriFieldTypeGeometry))
+                    {
+                        comboBox1Layer.Items.Add(field.Name);
+                    }
+                }
+
+            }
+        }
+
+        #region "Get Fields From Create Feature Template"
+        ///<summary>Returns a reference to the ESRI editor object.</summary>
+        ///  
+        ///<param name="editor3">An IMxApplication interface, ie. ArcMap.</param>
+        ///   
+        ///<returns>An IFields interface, the ArcMap Editor.</returns>
+        public IFields GetFieldsFromCreateFeatureTemplate(IEditor3 editor3)
+        {
+            IEditTemplate currentEditTemplate = editor3.CurrentTemplate;
+            if (currentEditTemplate != null)
+            {
+                ILayer2 layer = (ILayer2)currentEditTemplate.Layer;
+                IFeatureLayer featureLayer = (IFeatureLayer)layer;
+                IFeatureClass featureClass = featureLayer.FeatureClass;
+                IFields fields = featureClass.Fields;
+                return fields;
             }
             else
             {
-                Enabled = false;
+                return null;
             }
-            //Enabled = ArcMap.Application != null;
+            
+
         }
-
-        protected override void OnActivate()
-        {
-            MyForm myForm = new MyForm();
-            myForm.Show();
-        }
-
-
+        #endregion
 
         #region"Get Editor from ArcMap"
         // ArcGIS Snippet Title:
@@ -89,6 +120,10 @@ namespace IncrementalValue
             return editor3;
         }
         #endregion
-    }
 
+        private void button1Go_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    }
 }
