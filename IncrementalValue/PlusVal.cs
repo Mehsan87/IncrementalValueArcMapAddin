@@ -4,11 +4,14 @@ using System.Text;
 using System.IO;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.ArcMapUI;
+using ESRI.ArcGIS.Desktop.AddIns;
 
 namespace IncrementalValue
 {
     public class PlusVal : ESRI.ArcGIS.Desktop.AddIns.Tool
     {
+
+        MyForm myForm = new MyForm();
         public PlusVal()
         {
             Enabled = false;
@@ -31,8 +34,13 @@ namespace IncrementalValue
 
         protected override void OnActivate()
         {
-            MyForm myForm = new MyForm();
+            myForm = new MyForm();
             myForm.Show();
+        }
+
+        protected override void OnMouseDown(MouseEventArgs arg)
+        {
+            System.Windows.Forms.MessageBox.Show(myForm.layerFieldName + myForm.startValue + myForm.incrementalValue);
         }
 
 

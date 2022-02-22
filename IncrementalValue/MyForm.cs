@@ -17,9 +17,14 @@ namespace IncrementalValue
 {
     public partial class MyForm : Form
     {
+        public string layerFieldName;
+        public string startValue;
+        public string incrementalValue;
+
         public MyForm()
         {
             InitializeComponent();
+            
         }
 
         private void MyForm_Load(object sender, EventArgs e)
@@ -123,7 +128,14 @@ namespace IncrementalValue
 
         private void button1Go_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (string.IsNullOrEmpty(comboBox1Layer.Text) || string.IsNullOrEmpty(textBox1.Text) || string.IsNullOrEmpty(textBox2.Text))
+            {
+                return;
+            }
+            this.layerFieldName = comboBox1Layer.SelectedItem.ToString();
+            this.startValue = textBox1.Text.ToString();
+            this.incrementalValue = textBox2.Text.ToString();
+            this.Hide();
         }
     }
 }
