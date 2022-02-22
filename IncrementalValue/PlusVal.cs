@@ -40,7 +40,7 @@ namespace IncrementalValue
 
         protected override void OnMouseDown(MouseEventArgs arg)
         {
-            System.Windows.Forms.MessageBox.Show(myForm.layerFieldName + myForm.startValue + myForm.incrementalValue);
+            System.Windows.Forms.MessageBox.Show(myForm.layerFieldName + "_" + myForm.startValue + "_" + myForm.incrementalValue);
         }
 
 
