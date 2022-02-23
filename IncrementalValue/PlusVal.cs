@@ -58,6 +58,9 @@ namespace IncrementalValue
             CreateFeature(myForm.featureClass, pPoint, myForm.layerFieldName, newStartVal);
             IGeoFeatureLayer geoFeatureLayer = (IGeoFeatureLayer)myForm.featureLayer;
             geoFeatureLayer.DisplayAnnotation = true;
+            
+
+
             myForm.startValue = (newStartVal + newIncremantalVal).ToString();
             pMxDoc.ActiveView.Refresh();
         }
