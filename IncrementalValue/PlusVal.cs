@@ -63,7 +63,7 @@ namespace IncrementalValue
             IMaplexLabelStackingProperties objLabelStackingProperties = new MaplexLabelStackingProperties();
             IMaplexOverposterLayerProperties maplexOverposterLayerProperties = new MaplexOverposterLayerProperties();
             maplexOverposterLayerProperties.FeatureType = esriBasicOverposterFeatureType.esriOverposterPoint;
-            maplexOverposterLayerProperties.PointPlacementMethod = esriMaplexPointPlacementMethod.esriMaplexNorthOfPoint;
+            maplexOverposterLayerProperties.PointPlacementMethod = esriMaplexPointPlacementMethod.esriMaplexAroundPoint;
             maplexOverposterLayerProperties.CanTruncateLabel = false;
             maplexOverposterLayerProperties.CanStackLabel = true;
             maplexOverposterLayerProperties.LabelStackingProperties = objLabelStackingProperties;
@@ -76,8 +76,21 @@ namespace IncrementalValue
             pAnnoLayerPropsColl.QueryItem(0, out pAnnoLayerProps, out iec, out iec);
             ILabelEngineLayerProperties2 pLabelEngineLayerProps = (ILabelEngineLayerProperties2)pAnnoLayerProps;
             pLabelEngineLayerProps.Expression = "[" + myForm.layerFieldName + "]";
-
-
+            
+            IRgbColor color = new RgbColor
+            {
+                Red = 255,
+                Green = 0,
+                Blue = 0
+            };
+            ITextSymbol textSymbol = new TextSymbol
+            {
+                Size = 14,
+                Color = color
+            };
+            textSymbol.Text = "Bold";
+            pLabelEngineLayerProps.Symbol = textSymbol;
+            
             myForm.startValue = (newStartVal + newIncremantalVal).ToString();
             pMxDoc.ActiveView.Refresh();
         }
