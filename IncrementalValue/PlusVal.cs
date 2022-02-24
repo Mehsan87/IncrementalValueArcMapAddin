@@ -58,7 +58,24 @@ namespace IncrementalValue
             CreateFeature(myForm.featureClass, pPoint, myForm.layerFieldName, newStartVal);
             IGeoFeatureLayer geoFeatureLayer = (IGeoFeatureLayer)myForm.featureLayer;
             geoFeatureLayer.DisplayAnnotation = true;
+
+            //label
+            IMaplexLabelStackingProperties objLabelStackingProperties = new MaplexLabelStackingProperties();
+            IMaplexOverposterLayerProperties maplexOverposterLayerProperties = new MaplexOverposterLayerProperties();
+            maplexOverposterLayerProperties.FeatureType = esriBasicOverposterFeatureType.esriOverposterPoint;
+            maplexOverposterLayerProperties.PointPlacementMethod = esriMaplexPointPlacementMethod.esriMaplexNorthOfPoint;
+            maplexOverposterLayerProperties.CanTruncateLabel = false;
+            maplexOverposterLayerProperties.CanStackLabel = true;
+            maplexOverposterLayerProperties.LabelStackingProperties = objLabelStackingProperties;
+
             
+            IAnnotateLayerPropertiesCollection pAnnoLayerPropsColl = geoFeatureLayer.AnnotationProperties;
+            geoFeatureLayer.DisplayAnnotation = true;
+            IAnnotateLayerProperties pAnnoLayerProps;
+            IElementCollection iec;
+            pAnnoLayerPropsColl.QueryItem(0, out pAnnoLayerProps, out iec, out iec);
+            ILabelEngineLayerProperties2 pLabelEngineLayerProps = (ILabelEngineLayerProperties2)pAnnoLayerProps;
+            pLabelEngineLayerProps.Expression = "[" + myForm.layerFieldName + "]";
 
 
             myForm.startValue = (newStartVal + newIncremantalVal).ToString();
